@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { WordToGuess, Letter } from "../lib/defs";
 
-export default function FinalWord({ wordToGuess, onFinalWordChange }: {
+export default function FinalWord({ wordToGuess, onFinalWordChange, riskFinalWord }: {
   wordToGuess: WordToGuess
   onFinalWordChange: (value: string) => void
+  riskFinalWord: () => void
 }) {
   const [finalWord, setFinalWord] = useState('_'.repeat(wordToGuess.content.length))
   const [focusedIndex, setFocusedIndex] = useState(-1)
@@ -24,23 +25,23 @@ export default function FinalWord({ wordToGuess, onFinalWordChange }: {
       {wordToGuess.letters.map((c, i) => {
         return <LetterField 
           key={i} 
-          letter={c} 
           focused={focusedIndex == i}
-	  onChange={(value: string) => letterChangeHandler(i, value)}
+	        onChange={(value: string) => letterChangeHandler(i, value)}
           onFull={() => setFocusedIndex(i + 1)}
           onEmpty={() => setFocusedIndex(i - 1)}
+          onEnter={riskFinalWord}
         />
       })}
     </span>
   );
 }
 
-export function LetterField({ letter, focused, onChange, onFull, onEmpty }: {
-  letter: Letter // TODO: use this if revealed 
+export function LetterField({ focused, onChange, onFull, onEmpty, onEnter }: {
   focused: boolean
   onChange: (value: string) => void
   onFull: () => void
   onEmpty: () => void
+  onEnter: () => void
 }) {
   const [value, setValue] = useState('')
   const [valueAfter, setValueAfter] = useState('')
@@ -76,6 +77,8 @@ export function LetterField({ letter, focused, onChange, onFull, onEmpty }: {
           onEmpty()
         else if (e.key == 'ArrowRight') 
           onFull()
+        else if (e.key == 'Enter')
+          onEnter()
         else if (value != '')
           onFull()
         setValueAfter(value)

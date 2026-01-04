@@ -75,6 +75,10 @@ export default function Page()
     setGame(produce(game, draft => {
       if (!draft) return
       const response = draft.riskWordToGuess(finalWord)
+      if (response === 'not-full') {
+        setGuessedWordError(errorMessages[response]);
+        return;
+      }
       if (response === 'correct') {
         setGameWon(true)
         setGameEnded(true)
@@ -152,7 +156,7 @@ export default function Page()
           <div className='relative mt-6 mb-4'>
             <div className='flex justify-center items-center gap-3'>
               <SurrenderButton />
-              <FinalWord wordToGuess={game.wordToGuess} onFinalWordChange={setFinalWord}/>
+              <FinalWord wordToGuess={game.wordToGuess} onFinalWordChange={setFinalWord} riskFinalWord={riskWordToGuess}/>
               <RiskFinalButton riskWordToGuessHandler={riskWordToGuess} disabled={gameEnded} />
             </div>
           </div>

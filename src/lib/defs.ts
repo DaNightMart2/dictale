@@ -189,9 +189,10 @@ export class Game
 
   riskWordToGuess(prompt: string): 'not-full' | 'correct' | 'wrong'
   {
-    if (prompt.length < this.wordToGuess.getLetterCount())
+    const plainPrompt = prompt.toPlainLetters();
+    if (plainPrompt.length < this.wordToGuess.getLetterCount())
       return 'not-full'
-    else if (this.wordToGuess.isEqual(prompt.toPlainLetters()))
+    else if (this.wordToGuess.isEqual(plainPrompt))
       return 'correct'
     else
       return 'wrong'
