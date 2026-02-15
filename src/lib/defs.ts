@@ -1,133 +1,120 @@
 import { immerable } from 'immer';
 
-String.prototype.toPlainLetters = function() 
-{
-  return this.replace(/[^a-zA-Z]/g, '').toLowerCase()
+const ALPHABET = 'a-z'
+const N_TILDE = 'ñ'
+const ACCENTS = 'áéíóúü'
+
+export function isSpanishLetter(letter: string): boolean {
+  const allSpanishLettersRegex = new RegExp(`^[${ALPHABET}${N_TILDE}${ACCENTS}]+$`)
+  return allSpanishLettersRegex.test(letter.toLowerCase())
 }
 
-export function isValidLetter(letter: string): boolean 
-{
-  return /^[a-zA-Z]$/.test(letter)
+export function isPlainLetter(letter: string): boolean {
+  const allPlainLettersRegex = new RegExp(`^[${ALPHABET}${N_TILDE}]+$`)
+  return allPlainLettersRegex.test(letter)
 }
 
-export class Letter 
-{
+const spanishToPlainMap: Record<string, string> = {
+  'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ü': 'u',
+}
+
+export function toPlainLetters(s: string): string {
+  const accentRegex = new RegExp(`[${ACCENTS}]`, 'g')
+  const notSpanishLetterRegex = new RegExp(`[^${ALPHABET}${N_TILDE}${ACCENTS}]`, 'g')
+  return s.toLowerCase().replace(notSpanishLetterRegex, '').replace(accentRegex, (c) => spanishToPlainMap[c])
+}
+
+export class Letter {
   letter: string
   revealed: boolean
   green: boolean
 
-  constructor(content: string) 
-  {
+  constructor(content: string) {
     this.letter = content
-    this.revealed = !isValidLetter(content)
+    this.revealed = !isSpanishLetter(content)
     this.green = false
   }
 
-  guess(prompt: string) 
-  {
-    if (!this.revealed && prompt === this.letter.toLowerCase())
-      this.reveal(true)
+  guess(plainPrompt: string) {
+    if (this.revealed) return
+    if (plainPrompt !== toPlainLetters(this.letter)) return
+    this.reveal(true)
   }
 
-  reveal(green: boolean)
-  {
+  reveal(green: boolean) {
     this.revealed = true
     this.green = this.green || green
   }
 }
 
-export class Word 
-{
+export class Word {
   content: string
   letters: Letter[]
 
-  constructor(content: string) 
-  {
+  constructor(content: string) {
     this.content = content
     this.letters = content.split('').map(letter => new Letter(letter))
   }
 
-  isEqual(prompt: string): boolean
-  {
-    return this.content.toPlainLetters() == prompt
+  getLetterCount() {
+    return this.letters.filter(letter => isSpanishLetter(letter.letter)).length
   }
 
-  getLetterCount()
-  {
-    return this.letters.filter(letter => isValidLetter(letter.letter)).length
+  getRevealedLetterCount() {
+    return this.letters.filter(letter => isSpanishLetter(letter.letter) && letter.revealed).length
   }
 
-  getRevealedLetterCount()
-  {
-    return this.letters.filter(letter => letter.revealed && isValidLetter(letter.letter)).length
-  }
-
-  isFullyRevealed(): boolean
-  {
+  isFullyRevealed(): boolean {
     return this.getRevealedLetterCount() === this.getLetterCount()
   }
 
-  guess(prompt: string)
-  {
-    if (this.isEqual(prompt)) 
-    {
-      this.letters.forEach(letter => letter.reveal(false))
-    }
+  guess(plainPrompt: string) {
+    if (plainPrompt !== toPlainLetters(this.content)) return 
+    this.letters.forEach(letter => letter.reveal(false))
   }
 
-  guessLetter(prompt: string) 
-  {
-    this.letters.forEach(letter => letter.guess(prompt))
+  guessLetter(plainPrompt: string) {
+    this.letters.forEach(letter => letter.guess(plainPrompt))
   }
 
-  reveal(green: boolean)
-  {
+  reveal(green: boolean) {
     this.letters.forEach(letter => letter.reveal(green))
   }
 }
 
-export class WordToGuess extends Word 
-{
+export class WordToGuess extends Word {
 
 }
 
-export class Definition 
-{
+export class Definition {
   words: Word[]
 
-  constructor(content: string) 
-  {
+  constructor(content: string) {
     this.words = content.split(' ').map(word => new Word(word))
   }
 
-  getLetterCount()
-  {
+  getLetterCount() {
     return this.words.reduce((acc, word) => acc + word.getLetterCount(), 0)
   }
 
-  getRevealedLetterCount()
-  {
+  getRevealedLetterCount() {
     return this.words.reduce((acc, word) => acc + word.getRevealedLetterCount(), 0)
   }
 
-  guessWord(prompt: string) 
-  {
+  guessWord(prompt: string) {
     this.words.forEach(word => word.guess(prompt))
   }
 
-  guessLetter(prompt: string)
-  {
+  guessLetter(prompt: string) {
     this.words.forEach(word => word.guessLetter(prompt))
   }
 
-  reveal(green: boolean)
-  {
+  reveal(green: boolean) {
     this.words.forEach(word => word.reveal(green))
   }
 }
 
-export class Game
-{
+export class Game {
   [immerable] = true
   
   wordToGuess: WordToGuess
@@ -139,8 +126,7 @@ export class Game
   uncoveredWords: string[]
   failedWords: string[]
 
-  constructor(word: string, definitions: string[])
-  {
+  constructor(word: string, definitions: string[]) {
     this.wordToGuess = new WordToGuess(word)
     this.definitions = definitions.map(def => new Definition(def))
     this.guessedWords = []
@@ -150,22 +136,14 @@ export class Game
     this.failedWords = []
   }
 
-  getAllWordsInDefinitions(): string[]
-  {
-    const words: string[] = []
-    this.definitions.forEach(def => {
-      def.words.forEach(word => {
-        const plainWord = word.content.toPlainLetters()
-        if (plainWord && !words.includes(plainWord)) {
-          words.push(plainWord)
-        }
-      })
-    })
-    return words
+  isInDefinitions(plainPrompt: string): boolean {
+    return this.definitions.some(def => def.words.some(word => {
+      console.log(toPlainLetters(word.content), plainPrompt)
+      return toPlainLetters(word.content) === plainPrompt
+    }))
   }
 
-  getFullyRevealedWordPositions(): number[][]
-  {
+  getFullyRevealedWordPositions(): number[][] {
     const positions: number[][] = []
     this.definitions.forEach((def, defIndex) => {
       def.words.forEach((word, wordIndex) => {
@@ -177,92 +155,85 @@ export class Game
     return positions
   }
 
-  getLetterCount()
-  {
+  getLetterCount() {
     return this.definitions.reduce((acc, def) => acc + def.getLetterCount(), 0)
   }
 
-  getRevealedLetterCount()
-  {
+  getRevealedLetterCount() {
     return this.definitions.reduce((acc, def) => acc + def.getRevealedLetterCount(), 0)
   }
 
-  riskWordToGuess(prompt: string): 'not-full' | 'correct' | 'wrong'
-  {
-    const plainPrompt = prompt.toPlainLetters();
+  riskWordToGuess(prompt: string): 'invalid-letter' | 'not-full' | 'correct' | 'wrong' {
+    prompt = prompt.toLowerCase()
+    if (!isSpanishLetter(prompt)) return 'invalid-letter'
+    const plainPrompt = toPlainLetters(prompt);
     if (plainPrompt.length < this.wordToGuess.getLetterCount())
       return 'not-full'
-    else if (this.wordToGuess.isEqual(plainPrompt))
+    else if (plainPrompt === toPlainLetters(this.wordToGuess.content))
       return 'correct'
     else
       return 'wrong'
   }
 
-  guessWord(prompt: string): 'empty' | 'already-guessed' | 'not-found' | 'ok'
-  { 
-    let plainPrompt = prompt.toPlainLetters()
-
-    if (!plainPrompt)
+  guessWord(prompt: string): 'empty' | 'invalid-letter' | 'already-guessed' | 'not-found' | 'ok' {
+    if (!prompt) 
       return 'empty'
-
+    
+    prompt = prompt.toLowerCase()
+    if (!isSpanishLetter(prompt))
+      return 'invalid-letter'
+  
+    const plainPrompt = toPlainLetters(prompt)
     if (this.guessedWords.includes(plainPrompt))
       return 'already-guessed'
-
     this.guessedWords.push(plainPrompt)
 
-    const wordsInDef = this.getAllWordsInDefinitions()
-    const wordFound = wordsInDef.includes(plainPrompt)
-
+    const wordFound = this.isInDefinitions(plainPrompt)
     if (!wordFound) {
       this.failedWords.push(plainPrompt)
       return 'not-found'
     }
-
-    this.definitions.forEach(def => def.guessWord(plainPrompt))
-    return 'ok'
+    else {
+      this.definitions.forEach(def => def.guessWord(plainPrompt))
+      return 'ok'
+    }
   }
 
-  guessLetter(prompt: string): 'empty' | 'invalid-letter' | 'already-revealed' | 'no-letters-left' | 'ok'
-  {
-    let plainPrompt = prompt.toPlainLetters()
-
-    if (!plainPrompt)
+  guessLetter(prompt: string): 'empty' | 'invalid-letter' | 'already-revealed' | 'no-letters-left' | 'ok' {
+    if (!prompt) 
       return 'empty'
 
-    if (!isValidLetter(plainPrompt))
+    prompt = prompt.toLowerCase()
+    if (!isSpanishLetter(prompt))
       return 'invalid-letter'
 
-    if (this.revealedLetters.includes(plainPrompt))
+    const plainPrompt = toPlainLetters(prompt)
+  
+    if (this.revealedLetters.includes(plainPrompt)) 
       return 'already-revealed'
-
     if (this.revealedLetters.length >= 3)
       return 'no-letters-left'
-
+  
     this.definitions.forEach(def => def.guessLetter(plainPrompt))
     this.wordToGuess.guessLetter(plainPrompt)
     this.revealedLetters.push(plainPrompt)
-
     return 'ok'
   }
 
-  revealWord(position: number[]): 'empty' | 'invalid-position' | 'already-revealed' | 'no-reveals-left' | 'ok'
-  {
+  revealWord(position: number[]): 'invalid-position' | 'already-revealed' | 'no-reveals-left' | 'ok' {
     if (!position || position.length !== 2)
       return 'invalid-position'
 
     const [defIndex, wordIndex] = position
-    
     if (defIndex < 0 || defIndex >= this.definitions.length)
       return 'invalid-position'
-    
     if (wordIndex < 0 || wordIndex >= this.definitions[defIndex].words.length)
       return 'invalid-position'
-
+  
     const word = this.definitions[defIndex].words[wordIndex]
     
     if (word.isFullyRevealed())
       return 'already-revealed'
-
     if (this.revealedWords.length >= 3)
       return 'no-reveals-left'
 
