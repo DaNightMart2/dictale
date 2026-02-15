@@ -1,18 +1,19 @@
 import clsx from 'clsx';
 import { Definition } from "../lib/defs"
 
-export default function Definitions({ definitions, revealingWord, revealedWords, onWordClick }: {
+export default function Definitions({ definitions, revealingWord, revealedWords, onWordClick, gameEnded }: {
   definitions: Definition[]
   revealingWord?: boolean
   revealedWords?: number[][]
   onWordClick?: (position: number[]) => void
+  gameEnded?: boolean
 }) {
   const isWordRevealed = (defIndex: number, wordIndex: number): boolean => {
     return revealedWords?.some(pos => pos[0] === defIndex && pos[1] === wordIndex) || false
   }
 
   const handleWordClick = (defIndex: number, wordIndex: number) => {
-    if (revealingWord && onWordClick) {
+    if (revealingWord && onWordClick && !gameEnded) {
       onWordClick([defIndex, wordIndex])
     }
   }
@@ -29,7 +30,7 @@ export default function Definitions({ definitions, revealingWord, revealedWords,
           </span>
           {def.words.map((word, j) => {
             const wordRevealed = isWordRevealed(i, j)
-            const isClickable = revealingWord && !wordRevealed
+            const isClickable = revealingWord && !wordRevealed && !gameEnded
             
             return (
               <div 
@@ -44,17 +45,22 @@ export default function Definitions({ definitions, revealingWord, revealedWords,
                 onClick={() => handleWordClick(i, j)}
                 title={isClickable ? 'Click para revelar esta palabra' : ''}
               >
-                {word.letters.map((letter, k) => (
-                  <span 
-                    className={clsx(
-                      'text-xl font-bold transition-colors duration-200',
-                      letter.green ? 'text-green-600' : letter.revealed ? 'text-gray-800' : 'text-gray-400'
-                    )} 
-                    key={k}
-                  >
-                    {letter.revealed ? letter.letter : '_'}
-                  </span>
-                ))}
+                {word.letters.map((letter, k) => {
+                  const showLetter = gameEnded || letter.revealed
+                  const isUnguessedWord = gameEnded && !wordRevealed
+                  return (
+                    <span 
+                      className={clsx(
+                        'text-xl font-bold transition-colors duration-200',
+                        isUnguessedWord ? 'text-gray-400' :
+                        letter.green ? 'text-green-600' : letter.revealed ? 'text-gray-800' : 'text-gray-400'
+                      )} 
+                      key={k}
+                    >
+                      {showLetter ? letter.letter : '_'}
+                    </span>
+                  )
+                })}
               </div>
             )
           })}

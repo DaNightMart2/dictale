@@ -40,6 +40,7 @@ export default function Page()
   const [revealingWord, setRevealingWord] = useState<boolean>(false)
   const [gameEnded, setGameEnded] = useState<boolean>(false)
   const [gameWon, setGameWon] = useState<boolean>(false)
+  const [winBannerCollapsed, setWinBannerCollapsed] = useState<boolean>(false)
   const definitionsBoxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function Page()
       }
       if (response === 'correct') {
         setGameWon(true)
-        setGameEnded(true)
+        // Don't set gameEnded - let user choose to keep playing or end
       } else if (response === 'wrong') {
         setGameWon(false)
         setGameEnded(true)
@@ -160,7 +161,7 @@ export default function Page()
               <RiskFinalButton riskWordToGuessHandler={riskWordToGuess} disabled={gameEnded} />
             </div>
           </div>
-          {gameEnded && (
+          {(gameWon || gameEnded) && (
             <div className={clsx(
               'mt-4 p-4 border-2 rounded-xl text-center shadow-lg transition-all duration-300',
               gameWon 
@@ -171,11 +172,39 @@ export default function Page()
                 'text-2xl font-bold mb-2',
                 gameWon ? 'text-green-600' : 'text-red-600'
               )}>
-                {gameWon ? '🎉 ¡Has adivinado la palabra!' : '😔 Más suerte la próxima vez...'}
+                {gameWon 
+                  ? (progress === 100 
+                      ? '🌟 ¡Perfecto! Has adivinado la palabra y todas las definiciones.' 
+                      : '🎉 ¡Has adivinado la palabra!')
+                  : '😔 Más suerte la próxima vez...'}
               </div>
-              <div className='text-base text-gray-700'>
+              <div className='text-base text-gray-700 mb-3'>
                 La palabra era: <span className='font-bold text-gray-900'>{game.wordToGuess.content.toUpperCase()}</span>
               </div>
+              {gameWon && !gameEnded && !winBannerCollapsed && (
+                <div className='flex flex-wrap justify-center gap-2'>
+                  <button
+                    onClick={() => setWinBannerCollapsed(true)}
+                    className='px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors'
+                  >
+                    Seguir adivinando definiciones
+                  </button>
+                  <button
+                    onClick={() => setGameEnded(true)}
+                    className='px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition-colors'
+                  >
+                    Terminar y revelar todo
+                  </button>
+                </div>
+              )}
+              {gameWon && !gameEnded && winBannerCollapsed && progress !== 100 && (
+                <button
+                  onClick={() => setGameEnded(true)}
+                  className='text-sm text-gray-600 hover:text-gray-800 underline'
+                >
+                  Terminar y revelar todo
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -191,6 +220,7 @@ export default function Page()
           revealingWord={revealingWord}
           revealedWords={game.getFullyRevealedWordPositions()}
           onWordClick={revealWord}
+          gameEnded={gameEnded}
         />
         </div>
         <div className={clsx({
