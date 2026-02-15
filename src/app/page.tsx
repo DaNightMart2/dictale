@@ -155,11 +155,29 @@ export default function Page()
           <hr className='border-gray-300 my-4' />
           <div className='relative mt-6 mb-4'>
             <div className='flex justify-center items-center gap-3'>
-              <SurrenderButton />
+              <SurrenderButton onSurrender={() => { if (confirm('¿Estás seguro de que quieres rendirte?')) { setGameWon(false); setGameEnded(true); } }} disabled={gameEnded} />
               <FinalWord wordToGuess={game.wordToGuess} onFinalWordChange={setFinalWord} riskFinalWord={riskWordToGuess}/>
               <RiskFinalButton riskWordToGuessHandler={riskWordToGuess} disabled={gameEnded} />
             </div>
           </div>
+          {gameEnded && (
+            <div className={clsx(
+              'mt-4 p-4 border-2 rounded-xl text-center shadow-lg transition-all duration-300',
+              gameWon 
+                ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-300' 
+                : 'bg-gradient-to-br from-red-50 to-rose-50 border-red-300'
+            )}>
+              <div className={clsx(
+                'text-2xl font-bold mb-2',
+                gameWon ? 'text-green-600' : 'text-red-600'
+              )}>
+                {gameWon ? '🎉 ¡Has adivinado la palabra!' : '😔 Más suerte la próxima vez...'}
+              </div>
+              <div className='text-base text-gray-700'>
+                La palabra era: <span className='font-bold text-gray-900'>{game.wordToGuess.content.toUpperCase()}</span>
+              </div>
+            </div>
+          )}
         </div>
         <div 
           ref={definitionsBoxRef}
@@ -223,24 +241,6 @@ export default function Page()
               revealWordHandler={startRevealWord}
             />
           </div>
-          {gameEnded && (
-            <div className={clsx(
-              'mt-6 p-6 border-2 rounded-xl text-center shadow-lg transition-all duration-300',
-              gameWon 
-                ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-300' 
-                : 'bg-gradient-to-br from-red-50 to-rose-50 border-red-300'
-            )}>
-              <div className={clsx(
-                'text-3xl font-bold mb-3',
-                gameWon ? 'text-green-600' : 'text-red-600'
-              )}>
-                {gameWon ? '🎉 ¡Has adivinado la palabra!' : '😔 Más suerte la próxima vez...'}
-              </div>
-              <div className='mt-2 text-base text-gray-700'>
-                La palabra era: <span className='font-bold text-gray-900'>{game.wordToGuess.content.toUpperCase()}</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
