@@ -138,7 +138,6 @@ export class Game {
 
   isInDefinitions(plainPrompt: string): boolean {
     return this.definitions.some(def => def.words.some(word => {
-      console.log(toPlainLetters(word.content), plainPrompt)
       return toPlainLetters(word.content) === plainPrompt
     }))
   }
