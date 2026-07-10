@@ -1,0 +1,12 @@
+{
+  "name": "@dictale/shared",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "clsx": "^2.1.1"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  }
+}
