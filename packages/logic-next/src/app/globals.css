@@ -1,17 +1,2 @@
-@import "tailwindcss";
+@import "../../../shared/styles/globals.css";
 @source "../../../shared";
-
-@layer base {
-  body {
-    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen;
-  }
-}
-
-@layer utilities {
-  .unselectable {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-}
