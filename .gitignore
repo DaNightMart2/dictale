@@ -1,13 +1,22 @@
 # dependencies
-/node_modules
+node_modules/
 
 # Next.js build output
 .next/
+
+# build output
+dist/
+out/
 
 # python
 .venv/
 __pycache__/
 *.pyc
+
+# haskell build artifacts
+*.hi
+*.o
+packages/logic-haskell/Game
 
 # private data
 /private
