@@ -1,71 +1,53 @@
 # Dictale
 
-Dictale es un juego de palabras en español: cada día hay una palabra oculta y hay que
-adivinarla a partir de sus definiciones, que se van revelando palabra por palabra.
+A word game
 
-Este repo es a la vez el juego y un ejercicio educativo: el mismo juego implementado
-varias veces, con la lógica siempre en el backend y un cliente intercambiable.
-Cada backend implementa su propio motor del juego (esa es la gracia), y todos hablan
-el mismo contrato REST, así que el mismo cliente funciona contra cualquiera.
-
-## Estructura
+## Structure
 
 ```
 dictale/
 ├── data/
-│   └── word_list.json      # diccionario compartido por todos los backends (nunca se sirve al cliente)
+│   └── word_list.json      # shared dictionary
 ├── packages/
-│   ├── shared/             # lo único que ve el cliente: componentes React, tipos (GameStateView), estilos
-│   ├── client-react/       # cliente React puro (Vite), sin lógica de juego; se conecta a cualquier backend
-│   ├── logic-next/         # backend autoritativo en Next.js (API routes) + su propio frontend
-│   ├── logic-python/       # backend autoritativo en Python (FastAPI)
-│   └── logic-haskell/      # motor del juego en Haskell (en progreso)
-├── downloaders/            # scripts para construir word_list.json (Wiktionary)
-└── private/                # datos crudos de diccionario (no versionado)
+│   ├── shared/             # react components, types, styles.
+│   ├── client-react/       # pure React client (using Vite)
+│   ├── logic-next/         # Next.js backend (though API routes) + frontend
+│   ├── logic-python/       # Python backend (FastAPI)
+│   └── logic-haskell/      # Haskell implementation
+└── downloaders/            # downloader scripts
 ```
 
-## Contrato REST
+## REST API
 
-Todos los backends exponen los mismos endpoints y devuelven el mismo `GameStateView`
-enmascarado (las definiciones completas nunca salen del servidor):
+All backends expose the same endpoint suite and return the same `GameStateView`.
 
-| Endpoint | Acción |
+| Endpoint | Action |
 |---|---|
-| `POST /api/game` | crear partida → `{ gameId, state }` |
-| `POST /api/game/:id/guess-word` | arriesgar una palabra de las definiciones |
-| `POST /api/game/:id/guess-letter` | revelar una letra (máx. 3) |
-| `POST /api/game/:id/reveal-word` | revelar una palabra entera (máx. 3) |
-| `POST /api/game/:id/guess-final` | arriesgar la palabra final |
-| `POST /api/game/:id/surrender` | rendirse (devuelve `answer`) |
+| `POST /api/game` | start game → `{ gameId, state }` |
+| `POST /api/game/:id/guess-word` | guess a definition word |
+| `POST /api/game/:id/guess-letter` | reveal a letter (máx. 3) |
+| `POST /api/game/:id/reveal-word` | reveal a whole word (máx. 3) |
+| `POST /api/game/:id/guess-final` | risk the final word |
+| `POST /api/game/:id/surrender` | surrender (returns `answer`) |
 
-## Cómo correr cada combinación
+## How to run different combinations
 
-### Next.js full-stack (frontend + backend juntos)
+### Next.js full-stack
 
 ```bash
 npm install
 npm run dev:next        # http://localhost:3000
 ```
 
-### Cliente React + backend Python
+### Python backend + React client
 
 ```bash
-# Terminal 1 — backend
+# Console 1 — backend
 python3 -m venv .venv && .venv/bin/pip install -r packages/logic-python/requirements.txt
 npm run dev:python      # http://localhost:8000
 
-# Terminal 2 — cliente (el dev server proxya /api al backend)
+# Console 2 — client
 npm run dev:client      # http://localhost:5173
-```
-
-### Cliente React + backend Next.js
-
-```bash
-# Terminal 1
-npm run dev:next
-
-# Terminal 2 — apuntar el proxy al backend Next
-BACKEND_URL=http://localhost:3000 npm run dev:client
 ```
 
 ### Haskell (experimental)
@@ -75,8 +57,3 @@ cd packages/logic-haskell
 runghc Game.hs
 ```
 
-## Requisitos
-
-- Node.js 18+
-- Python 3.10+ (solo para `logic-python` y `downloaders/`)
-- GHC (solo para `logic-haskell`)
