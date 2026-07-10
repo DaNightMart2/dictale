@@ -11,6 +11,7 @@ import {
   GuessWordInput,
   RevealLetterInput,
   RevealWordInput,
+  Tutorial,
 } from '@shared/components'
 import type { GameStateView, LetterView } from '@shared/types/game-state'
 
@@ -38,6 +39,7 @@ export default function App() {
   const [finalWord, setFinalWord] = useState('')
   const [guessedWordError, setGuessedWordError] = useState('')
   const [revealingWord, setRevealingWord] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
   const definitionsBoxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -123,6 +125,10 @@ export default function App() {
     }
   }
 
+  if (showTutorial) {
+    return <Tutorial onPlay={() => setShowTutorial(false)} />
+  }
+
   if (loading || !state) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -140,7 +146,7 @@ export default function App() {
       )}
       <div className="flex flex-col gap-4 unselectable pt-3 w-full max-w-2xl relative z-10">
         <div className={clsx({ 'blur-sm opacity-50 pointer-events-none transition-all duration-300': revealingWord })}>
-          <Header />
+          <Header onTutorialClick={() => setShowTutorial(true)} />
           <hr className="border-gray-300 my-4" />
           <div className="relative mt-6 mb-4">
             <div className="flex justify-center items-center gap-3">
