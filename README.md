@@ -30,6 +30,21 @@ All backends expose the same endpoint suite and return the same `GameStateView`.
 | `POST /api/game/:id/guess-final` | risk the final word |
 | `POST /api/game/:id/surrender` | surrender (returns `answer`) |
 
+## Implementations
+
+### React components / styles
+
+All components and styles can be found at `shared/components`, `shared/styles`.
+You can also find JS types at `shared/types`.
+A pure React server can be found in `client-react` package.
+
+### Next.js backend
+
+All Javascript logic is at `logic-next/src/lib/game/*.ts`. Pages inside `logic-next` are
+only thin wrappers of the shared React components.
+The only other relevant code are the API wrappers for Next.js server functions.
+
+
 ## How to run different combinations
 
 ### Next.js full-stack
