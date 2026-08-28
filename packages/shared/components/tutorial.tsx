@@ -35,11 +35,11 @@ export default function Tutorial({ playHref, onPlay }: {
             Como ayuda, debajo de la palabra principal, habrá una lista con una o más definiciones de la palabra a descubrir:
           </div>
           <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
-            <b className='text-indigo-700'>1.</b> __e_e__a_o_, _e__o_a __e, __o_e__o_a_ _ o_a__o_a__e__e, __e_e__a _ _o_e__a __ e__e__á___o, o __ __o__a_a _e_e_____o o _a__o_ó___o.,
+            <b className='text-indigo-700'>1.</b> ___________, _______ ___, ___________ _ ______________, ________ _ _______ __ ___________, _ __ ________ __________ _ ___________.,
             __________ _ ___________ ____________ ___________.
           </p>
           <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
-            <b className='text-indigo-700'>2.</b> _e__o_a __e _o____e __ a__o_ó___.
+            <b className='text-indigo-700'>2.</b> _______ ___ _______ __ _________.
           </p>
           <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
             Palabra
