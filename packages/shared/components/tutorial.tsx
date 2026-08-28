@@ -5,7 +5,7 @@ export default function Tutorial({ playHref, onPlay }: {
   onPlay?: () => void
 }) {
   const playButtonClassName =
-    'px-8 py-4 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full transition-all duration-200 hover:shadow-lg transform hover:scale-105 active:scale-95'
+    'px-8 py-4 bg-green-400 hover:bg-green-500 text-white font-bold rounded-full transition-all duration-200 hover:shadow-lg transform hover:scale-105 active:scale-95'
 
   return (
     <div className='flex flex-col items-center relative min-h-screen py-8 px-4'>
@@ -13,32 +13,40 @@ export default function Tutorial({ playHref, onPlay }: {
         <Header />
         <hr className='border-gray-300 my-4' />
         <div className='bg-white/90 backdrop-blur-sm border-2 rounded-xl p-6 shadow-lg mt-2 max-w-3xl mx-auto'>
+          <h1 className='text-[25px] mb-4 text-gray-700 font-bold'>
+            Breve argumento
+          </h1>
           <p className='mb-4 text-gray-700'>
-            ¡Bienvenido al Dictale! Este pequeño juego apelará a tus conocimientos lingüísticos y de
-            habilidad de razonamiento.
+            ¡Bienvenido a Dictale! Este juego apelará a tus conocimientos lingüísticos y a tu habilidad de razonamiento.
           </p>
+          <h1 className='text-[25px] mb-4 text-gray-700 font-bold'>
+            Objetivo
+          </h1>
           <p className='mb-4 text-gray-700'>
-            El objetivo principal del Dictale es descubrir la palabra en la parte superior del juego:
+            El objetivo principal de Dictale es descubrir la palabra en la parte superior del juego:
           </p>
           <div className='text-2xl tracking-widest text-center mb-6 font-mono'>
             _____
           </div>
           <div className='mt-6 mb-4 text-gray-700'>
-            Como ayuda, debajo de la palabra principal, habrá una lista con una o más
-            definiciones de la palabra a descubrir:
+            <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
+              Definiciones
+            </h1>
+            Como ayuda, debajo de la palabra principal, habrá una lista con una o más definiciones de la palabra a descubrir:
           </div>
-          <p className='text-lg tracking-wide italic mb-2 text-gray-600'>
-            <b>1.</b> _____ ____ ___ _______ ___ __ ___ __ ____________,
+          <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
+            <b className='text-indigo-700'>1.</b> __e_e__a_o_, _e__o_a __e, __o_e__o_a_ _ o_a__o_a__e__e, __e_e__a _ _o_e__a __ e__e__á___o, o __ __o__a_a _e_e_____o o _a__o_ó___o.,
             __________ _ ___________ ____________ ___________.
           </p>
-          <p className='text-lg tracking-wide italic mb-4 text-gray-600'>
-            <b>2.</b> ____________, __________ _______ _____ __ ___ __ ___
-            ______ _________ _ ______, _____ _ __ __ __ _______.
+          <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
+            <b className='text-indigo-700'>2.</b> _e__o_a __e _o____e __ a__o_ó___.
           </p>
+          <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
+            Palabra
+          </h1>
           <p className='mb-4 text-gray-700'>
             Sin embargo, tanto la palabra como cada definición están ocultas. Para poder descubrir
-            las definiciones, y con ellas descubrir la palabra final, habrá pistas semejantes a las
-            del famoso juego del Ahorcado.
+            las definiciones, y con ellas descubrir la palabra final, se usa la herramienta que se encuentra debajo del progreso:
           </p>
           <div className='mt-4 mb-4'>
             <div className='flex gap-2 justify-center'>
@@ -61,12 +69,24 @@ export default function Tutorial({ playHref, onPlay }: {
             (escrita tal cual) en cada definición. Si la palabra no está presente en la definición se
             contará como un fallo. El objetivo es minimizar la cantidad de fallos.
           </p>
+          <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
+            Palabra final
+          </h1>
           <p className='mb-4 text-gray-700'>
             Para finalizar, deberás enviar cuál crees que es la palabra final por un campo similar,
             pero cuidado, pues solo tendrás un intento. No se contará como victoria si la palabra correcta
             es enviada por el otro campo.
           </p>
-          <div className='flex justify-center gap-2 mb-4'>
+          <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
+            Revelar palabra
+          </h1>
+          <p className='mb-4 text-gray-700'>
+            Como empezar a adivinar palabras en la(s) definición(es) puede ser casi imposible, hay una herramienta que te permite clicar sobre una palabra oculta en la definición para revelarla por completo. Esta herramienta NO te dirá si esa palabra aparece más veces en la definición. Solo puedes usar este recurso tres veces, así que úsalo cuando sientas importante conocer una palabra.
+          </p>
+          <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
+            Revelar letra
+          </h1>
+          <div className='items-center flex gap-2 justify-center mt-4 mb-4'>
             <input
               className='w-10 h-10 border border-gray-300 rounded-lg text-center uppercase bg-gray-100 cursor-not-allowed'
               value="B"
@@ -76,7 +96,7 @@ export default function Tutorial({ playHref, onPlay }: {
             />
             <input
               className='w-10 h-10 border border-gray-300 rounded-lg text-center uppercase bg-gray-100 cursor-not-allowed'
-              value="-"
+              value="M"
               maxLength={1}
               disabled
               readOnly
@@ -95,19 +115,12 @@ export default function Tutorial({ playHref, onPlay }: {
               ENVIAR
             </button>
           </div>
-          <p className='mb-4 text-gray-700'>
-            Como empezar a adivinar palabras en la(s) definición(es) puede ser casi imposible, hay dos tipos
-            de pistas más que podrás utilizar. La primera de ellas: enviando letras a través de este campo
-            podrás descubrir todas las apariciones de esa letra tanto en la palabra final como en la(s)
-            definición(es). Sin embargo, solo podrás usar esta herramienta tres veces, así que piensa bien
-            cuando vayas a usarla.
+          <p>Otra herramienta útil para comenzar te permite enviar letras a través de este campo, revelando todas las apariciones de esa letra en la(s) definición(es). Sin embargo, al igual que con la primera herramienta, solo se puede usar tres veces, así piensa bien cuando vayas a usarla.
           </p>
-          <p className='mb-4 text-gray-700'>
-            En segundo lugar, puedes clicar sobre una palabra oculta en la definición y descubrirla por
-            completo. Esta herramienta NO te dirá si esa palabra aparece más veces en la definición y
-            gastará una de las oportunidades para descubrir letras, cambiándola por un -, así que úsala cuando
-            sientas importante conocer una palabra.
-          </p>
+
+          <h1 className='text-[25px] mb-4 text-gray-700 font-bold'>
+            ¡A jugar!
+          </h1>
           <p className='mb-6 text-gray-700'>
             ¡Y esto es todo, ya estás listo para jugar!
           </p>
