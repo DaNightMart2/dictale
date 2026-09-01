@@ -17,7 +17,7 @@ export default function Tutorial({ playHref, onPlay }: {
             Breve argumento
           </h1>
           <p className='mb-4 text-gray-700'>
-            ¡Bienvenido a Dictale! Este juego apelará a tus conocimientos lingüísticos y a tu habilidad de razonamiento.
+            ¡Bienvenido a Dictale! Este juego pequeño apelará a tus conocimientos lingüísticos y a tu habilidad de razonamiento.
           </p>
           <h1 className='text-[25px] mb-4 text-gray-700 font-bold'>
             Objetivo
