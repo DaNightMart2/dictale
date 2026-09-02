@@ -17,7 +17,7 @@ export default function Tutorial({ playHref, onPlay }: {
             Breve argumento
           </h1>
           <p className='mb-4 text-gray-700'>
-            ¡Bienvenido a Dictale! Este juego pequeño apelará a tus conocimientos lingüísticos y a tu habilidad de razonamiento.
+            ¡Bienvenido a Dictale! Este pequeño juego apelará a tus conocimientos lingüísticos y a tu habilidad de razonamiento.
           </p>
           <h1 className='text-[25px] mb-4 text-gray-700 font-bold'>
             Objetivo
@@ -35,11 +35,12 @@ export default function Tutorial({ playHref, onPlay }: {
             Como ayuda, debajo de la palabra principal, habrá una lista con una o más definiciones de la palabra a descubrir:
           </div>
           <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
-            <b className='text-indigo-700'>1.</b> ___________, _______ ___, ___________ _ ______________, ________ _ _______ __ ___________, _ __ ________ __________ _ ___________.,
+            <b className='text-indigo-700'>1.</b> _____ ____ ___ _______ ___ __ ___ __ ____________,
             __________ _ ___________ ____________ ___________.
           </p>
           <p className='font-bold font-mono mb-4 text-gray-800 text-xl tracking-[0.3em]'>
-            <b className='text-indigo-700'>2.</b> _______ ___ _______ __ _________.
+            <b className='text-indigo-700'>2.</b> ____________, __________ _______ _____ __ ___ __ ___
+            ______ _________ _ ______, _____ _ __ __ __ _______.
           </p>
           <h1 className='text-[20px] mb-4 text-gray-700 font-bold'>
             Palabra
